@@ -172,9 +172,9 @@
                 detailedOutput += `[${k}]\n`;
                 items.forEach(i => {
                     let icon = '✅';
-                    let tag = '[AVAILABLE]';
-                    if (i.status === 'USED') { icon = '➖'; tag = '[USED     ]'; }
-                    if (i.status === 'CANCELED') { icon = '❌'; tag = '[CANCELED ]'; }
+                    let tag = '[ AVAILABLE ]';
+                    if (i.status === 'USED') { icon = '➖'; tag = '[   USED    ]'; }
+                    if (i.status === 'CANCELED') { icon = '❌'; tag = '[ CANCELED  ]'; }
                     
                     detailedOutput += `${icon} ${tag} ${i.number} | ${i.name}\n`;
                 });
