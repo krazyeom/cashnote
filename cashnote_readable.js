@@ -141,7 +141,7 @@
 
                         allResults.push({
                             category,
-                            name: po.productName,
+                            name: po.productName.replace('[카카오톡 발송]', '').trim(),
                             number: po.eCouponNumber || 'N/A',
                             status: finalStatus,
                             imgResult: imgStatus
