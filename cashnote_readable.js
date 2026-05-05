@@ -141,7 +141,7 @@
 
                         allResults.push({
                             category,
-                            name: po.productName.replace('[카카오톡 발송]', '').trim(),
+                            name: po.productName.replace('[카카오톡 발송]', '').replace('상품권 교환권', '').trim(),
                             number: po.eCouponNumber || 'N/A',
                             status: finalStatus,
                             imgResult: imgStatus
@@ -172,9 +172,9 @@
                 detailedOutput += `[${k}]\n`;
                 items.forEach(i => {
                     let icon = '✅';
-                    let tag = '[ AVAILABLE ]';
-                    if (i.status === 'USED') { icon = '➖'; tag = '[   USED    ]'; }
-                    if (i.status === 'CANCELED') { icon = '❌'; tag = '[ CANCELED  ]'; }
+                    let tag = '[AVAILABLE]';
+                    if (i.status === 'USED') { icon = '➖'; tag = '[USED]'; }
+                    if (i.status === 'CANCELED') { icon = '❌'; tag = '[CANCELED]'; }
                     
                     detailedOutput += `${icon} ${tag} ${i.number} | ${i.name}\n`;
                 });
