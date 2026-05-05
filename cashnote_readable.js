@@ -156,7 +156,7 @@
         }
 
         // [4] 최종 출력 및 정렬
-        print('\n--- ANALYSIS COMPLETE ---');
+        print('\n--- SCAN COMPLETE ---');
         
         // 정렬 순서: 미사용 -> 사용완료 -> 취소
         const statusOrder = { 'UNUSED': 0, 'USED': 1, 'CANCELED': 2 };
@@ -164,21 +164,8 @@
 
         const unusedCoupons = allResults.filter(i => i.status === 'UNUSED');
         
-        // [복사용 요약 섹션 생성]
-        let summaryOutput = "==============================\n";
-        summaryOutput += "   [미사용 쿠폰 번호 모음] \n";
-        summaryOutput += "==============================\n";
-        
-        targetKeywords.forEach(k => {
-            const categoryUnused = unusedCoupons.filter(i => i.category === k);
-            if (categoryUnused.length > 0) {
-                summaryOutput += `[${k}]\n`;
-                summaryOutput += `${categoryUnused.map(i => i.number).join('\n')}\n\n`;
-            }
-        });
-        summaryOutput += "==============================\n\n";
-
-        let detailedOutput = "--- 상세 내역 ---\n";
+        // 상세 내역 (먼저 출력)
+        let detailedOutput = "";
         targetKeywords.forEach(k => {
             const items = allResults.filter(i => i.category === k);
             if (items.length > 0) {
@@ -194,6 +181,18 @@
                 detailedOutput += '\n';
             }
         });
+
+        // 미사용 번호 모음 (가장 하단)
+        let summaryOutput = "\n";
+        targetKeywords.forEach(k => {
+            const categoryUnused = unusedCoupons.filter(i => i.category === k);
+            if (categoryUnused.length > 0) {
+                summaryOutput += `[${k}]\n`;
+                summaryOutput += `${categoryUnused.map(i => i.number).join('\n')}\n\n`;
+            }
+        });
+
+        print(detailedOutput + summaryOutput || 'No results found.');
 
         print(detailedOutput + summaryOutput || 'No results found.');
 
