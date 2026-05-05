@@ -189,7 +189,7 @@
             }
         });
 
-        print(summaryOutput + detailedOutput || 'No results found.');
+        print(detailedOutput + summaryOutput || 'No results found.');
 
     } catch (err) {
         print(`!! Fatal Error: ${err.message}`);
