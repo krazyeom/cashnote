@@ -117,13 +117,15 @@
                     if (category) {
                         const couponUrl = po.mobileCouponImageUrl;
                         
-                        // [최적화] 취소/환불된 건은 이미지 분석 없이 즉시 'USED' 처리
+                        // [최적화] 취소/환불된 건은 이미지 분석 없이 즉시 'CANCELED' 처리
                         const isAlreadyCanceled = (po.claimStatus === 'CANCELLATION_WITH_REFUNDED' || po.eCouponBuyerClaimableStatus === 'CANCELED');
                         
-                        let finalStatus = 'USED';
+                        let finalStatus = 'UNUSED';
                         let imgStatus = 'SKIPPED';
 
-                        if (!isAlreadyCanceled) {
+                        if (isAlreadyCanceled) {
+                            finalStatus = 'CANCELED';
+                        } else {
                             print(` Analyzing Image: ${po.productName.substring(0, 15)}...`);
                             imgStatus = await analyzeImage(couponUrl);
                             
@@ -156,8 +158,9 @@
         // [4] 최종 출력 및 정렬
         print('\n--- ANALYSIS COMPLETE ---');
         
-        // 미사용 우선 정렬
-        allResults.sort((a, b) => (a.status === 'USED' ? 1 : -1));
+        // 정렬 순서: 미사용 -> 사용완료 -> 취소
+        const statusOrder = { 'UNUSED': 0, 'USED': 1, 'CANCELED': 2 };
+        allResults.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
 
         const unusedCoupons = allResults.filter(i => i.status === 'UNUSED');
         
@@ -181,8 +184,11 @@
             if (items.length > 0) {
                 detailedOutput += `[${k}]\n`;
                 items.forEach(i => {
-                    const icon = i.status === 'UNUSED' ? '✅' : '➖';
-                    const tag = i.status === 'UNUSED' ? '[미사용]' : '[사용됨]';
+                    let icon = '✅';
+                    let tag = '[미사용  ]';
+                    if (i.status === 'USED') { icon = '➖'; tag = '[사용완료]'; }
+                    if (i.status === 'CANCELED') { icon = '❌'; tag = '[취소됨  ]'; }
+                    
                     detailedOutput += `${icon} ${tag} ${i.number} | ${i.name}\n`;
                 });
                 detailedOutput += '\n';
