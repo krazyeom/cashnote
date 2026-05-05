@@ -172,9 +172,9 @@
                 detailedOutput += `[${k}]\n`;
                 items.forEach(i => {
                     let icon = '✅';
-                    let tag = '[AVAILABLE]';
-                    if (i.status === 'USED') { icon = '➖'; tag = '[USED]'; }
-                    if (i.status === 'CANCELED') { icon = '❌'; tag = '[CANCELED]'; }
+                    let tag = '[미사용]';
+                    if (i.status === 'USED') { icon = '➖'; tag = '[ 사용 ]'; }
+                    if (i.status === 'CANCELED') { icon = '❌'; tag = '[ 환불 ]'; }
                     
                     detailedOutput += `${icon} ${tag} ${i.number} | ${i.name}\n`;
                 });
@@ -183,7 +183,7 @@
         });
 
         // 미사용 번호 모음 (가장 하단)
-        let summaryOutput = "--- AVAILABLE COUPONS ---\n";
+        let summaryOutput = "-- 사용 가능 쿠폰 --\n";
         targetKeywords.forEach(k => {
             const categoryUnused = unusedCoupons.filter(i => i.category === k);
             if (categoryUnused.length > 0) {
