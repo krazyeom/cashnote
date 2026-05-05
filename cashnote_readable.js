@@ -15,7 +15,7 @@
     const container = document.createElement('div');
     container.id = logId;
     container.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100%; height: 400px; 
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
         z-index: 100000; background: #000; color: #0f0; border-bottom: 2px solid #0f0;
         font-family: 'Courier New', monospace; display: flex; flex-direction: column;
     `;
