@@ -21,8 +21,14 @@
     `;
     
     const header = document.createElement('div');
-    header.style.cssText = 'padding: 5px 10px; background: #111; font-size: 11px; border-bottom: 1px solid #333; display: flex; justify-content: space-between;';
-    header.innerHTML = '<span>CASHNOTE IMAGE ANALYZER v3.0</span><span id="close-terminal" style="cursor:pointer; color:#f00;">[CLOSE]</span>';
+    header.style.cssText = 'padding: 5px 10px; background: #111; font-size: 11px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center;';
+    header.innerHTML = `
+        <span>CASHNOTE IMAGE ANALYZER v3.1</span>
+        <div>
+            <span id="view-barcodes" style="cursor:pointer; color:#0f0; margin-right:15px; display:none; border:1px solid #0f0; padding:2px 5px;">[VIEW BARCODES]</span>
+            <span id="close-terminal" style="cursor:pointer; color:#f00;">[CLOSE]</span>
+        </div>
+    `;
     
     const textarea = document.createElement('textarea');
     textarea.style.cssText = 'flex: 1; width: 100%; background: transparent; color: #0f0; border: none; padding: 10px; font-size: 13px; outline: none; resize: none; line-height: 1.4;';
@@ -78,6 +84,55 @@
             img.onerror = () => resolve('LOAD_ERROR');
             img.src = url;
         });
+    };
+    
+    // [2-1] 바코드 뷰어 함수
+    const showBarcodeViewer = (items) => {
+        if (items.length === 0) return alert('미사용 신세계/이마트 쿠폰이 없습니다.');
+        
+        let currentIndex = 0;
+        const viewer = document.createElement('div');
+        viewer.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100001; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-family:sans-serif;';
+        
+        const closeBtn = document.createElement('div');
+        closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; font-size:30px; cursor:pointer; padding:10px;';
+        closeBtn.innerHTML = '✕';
+        closeBtn.onclick = () => viewer.remove();
+        
+        const content = document.createElement('div');
+        content.style.cssText = 'background:#fff; color:#000; padding:30px; border-radius:15px; text-align:center; width:85%; max-width:400px; box-shadow:0 0 20px rgba(255,255,255,0.2);';
+        
+        const updateContent = () => {
+            const item = items[currentIndex];
+            const amountMatch = item.name.match(/[\d,]+원/);
+            const amount = amountMatch ? amountMatch[0] : '신세계 상품권';
+            
+            content.innerHTML = `
+                <div style="font-size:18px; font-weight:bold; margin-bottom:10px; color:#333;">${amount}</div>
+                <div style="font-size:14px; color:#666; margin-bottom:20px;">${item.name}</div>
+                <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${item.number}&scale=3&rotate=N&includetext=false" style="width:100%; height:auto; min-height:100px; margin:10px 0;">
+                <div style="font-size:20px; font-weight:bold; margin-top:15px; letter-spacing:2px; font-family:monospace;">${item.number}</div>
+                <div style="margin-top:25px; display:flex; justify-content:space-between; align-items:center;">
+                    <button id="prev-bc" style="padding:10px 15px; border:none; background:#eee; border-radius:5px; cursor:pointer;">◀ 이전</button>
+                    <span style="font-size:14px; color:#888;">${currentIndex + 1} / ${items.length}</span>
+                    <button id="next-bc" style="padding:10px 15px; border:none; background:#eee; border-radius:5px; cursor:pointer;">다음 ▶</button>
+                </div>
+            `;
+            
+            content.querySelector('#prev-bc').onclick = () => {
+                currentIndex = (currentIndex - 1 + items.length) % items.length;
+                updateContent();
+            };
+            content.querySelector('#next-bc').onclick = () => {
+                currentIndex = (currentIndex + 1) % items.length;
+                updateContent();
+            };
+        };
+        
+        updateContent();
+        viewer.appendChild(closeBtn);
+        viewer.appendChild(content);
+        document.body.appendChild(viewer);
     };
 
     // [3] 메인 수집 루프
@@ -156,6 +211,14 @@
 
         // [4] 최종 출력 및 정렬
         print('\n--- SCAN COMPLETE ---');
+        
+        const barcodeBtn = document.getElementById('view-barcodes');
+        const shinsegaeUnused = allResults.filter(i => i.status === 'UNUSED' && (i.category === '신세계이마트' || i.category === '이마트'));
+        
+        if (shinsegaeUnused.length > 0) {
+            barcodeBtn.style.display = 'inline-block';
+            barcodeBtn.onclick = () => showBarcodeViewer(shinsegaeUnused);
+        }
         
         // 정렬 순서: 미사용 -> 사용완료 -> 취소
         const statusOrder = { 'UNUSED': 0, 'USED': 1, 'CANCELED': 2 };
