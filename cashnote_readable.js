@@ -59,19 +59,17 @@
                     const imageData = ctx.getImageData(0, 0, checkW, checkH);
                     const data = imageData.data;
 
-                    let darkGrayPixels = 0;
+                    let grayPixels = 0;
                     for (let i = 0; i < data.length; i += 4) {
                         const r = data[i], g = data[i+1], b = data[i+2];
-                        // 도장의 회색 특징: R, G, B가 비슷하고 중간 밝기(80~180)인 경우
                         const avg = (r + g + b) / 3;
                         const diff = Math.max(r, g, b) - Math.min(r, g, b);
-                        if (avg > 70 && avg < 190 && diff < 30) {
-                            darkGrayPixels++;
-                        }
+                        // 도장의 회색 특징: R, G, B가 비슷하고 중간 밝기(70~190)인 경우
+                        if (avg > 70 && avg < 190 && diff < 30) grayPixels++;
                     }
 
                     // 해당 영역에서 회색 픽셀 비중이 15% 이상이면 도장으로 판단
-                    const ratio = darkGrayPixels / (data.length / 4);
+                    const ratio = grayPixels / (data.length / 4);
                     resolve(ratio > 0.15 ? 'USED' : 'UNUSED');
                 } catch (e) {
                     resolve('CORS_ERROR'); // 보안 정책으로 분석 불가 시
@@ -83,7 +81,8 @@
     };
 
     // [3] 메인 수집 루프
-    const targetKeywords = ['신세계이마트', '이마트', '문화상품권'];
+    const targetKeywords = ['신세계이마트', '이마트', '문화상품권', '현대백화점', '롯데모바일상품권'];
+    const noNumberKeywords = ['현대백화점', '롯데모바일상품권'];
     
     // 로컬스토리지의 'token' 키를 가져옵니다.
     const token = localStorage.getItem('token');
@@ -176,23 +175,24 @@
                     if (i.status === 'USED') { icon = '➖'; tag = '[ 사용 ]'; }
                     if (i.status === 'CANCELED') { icon = '❌'; tag = '[ 환불 ]'; }
                     
-                    detailedOutput += `${icon} ${tag} ${i.number} | ${i.name}\n`;
+                    const isNoNumber = noNumberKeywords.includes(i.category);
+                    const numberPart = isNoNumber ? '' : `${i.number} | `;
+                    detailedOutput += `${icon} ${tag} ${numberPart}${i.name}\n`;
                 });
                 detailedOutput += '\n';
             }
         });
 
         // 미사용 번호 모음 (가장 하단)
-        let summaryOutput = "-- 사용 가능 쿠폰 --\n";
+        let summaryOutput = "-- 사용 가능 쿠폰 번호 (복사용) --\n";
         targetKeywords.forEach(k => {
+            if (noNumberKeywords.includes(k)) return; // 번호 추출이 필요 없는 카테고리는 제외
             const categoryUnused = unusedCoupons.filter(i => i.category === k);
             if (categoryUnused.length > 0) {
                 summaryOutput += `[${k}]\n`;
                 summaryOutput += `${categoryUnused.map(i => i.number).join('\n')}\n\n`;
             }
         });
-
-        print(detailedOutput + summaryOutput || 'No results found.');
 
         print(detailedOutput + summaryOutput || 'No results found.');
 
