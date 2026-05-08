@@ -30,8 +30,9 @@
     const header = document.createElement('div');
     header.style.cssText = 'padding: 5px 10px; background: #111; font-size: 11px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center;';
     header.innerHTML = `
-        <span>CASHNOTE IMAGE ANALYZER v3.1</span>
+        <span>CASHNOTE ANALYZER <small style="color:#888;">by krazyeom</small></span>
         <div>
+            <span id="view-about" style="cursor:pointer; color:#aaa; margin-right:15px; text-decoration:underline;">[ABOUT]</span>
             <span id="view-barcodes" style="cursor:pointer; color:#0f0; margin-right:15px; display:none; border:1px solid #0f0; padding:2px 5px;">[VIEW BARCODES]</span>
             <span id="close-terminal" style="cursor:pointer; color:#f00;">[CLOSE]</span>
         </div>
@@ -46,6 +47,36 @@
     container.appendChild(textarea);
     document.body.appendChild(container);
     document.getElementById('close-terminal').onclick = () => container.remove();
+
+    // [1-1] 정보창 (ABOUT) 모달
+    const showAboutModal = () => {
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:100005; display:flex; align-items:center; justify-content:center; color:#fff; font-family:sans-serif;';
+        modal.onclick = () => modal.remove();
+        
+        const card = document.createElement('div');
+        card.style.cssText = 'background:#222; padding:25px; border-radius:15px; width:85%; max-width:350px; border:1px solid #444;';
+        card.onclick = (e) => e.stopPropagation();
+        
+        card.innerHTML = `
+            <div style="font-size:18px; font-weight:bold; margin-bottom:15px; color:#0f0; border-bottom:1px solid #444; padding-bottom:10px;">Version History</div>
+            <div style="font-size:13px; line-height:1.6; max-height:300px; overflow-y:auto; padding-right:5px;">
+                <b>v5.2</b>: 모바일 더블 탭 확대 방지 (touch-action)<br>
+                <b>v5.1</b>: 터치 이벤트 유실 및 DOM 업데이트 최적화<br>
+                <b>v5.0</b>: 바코드 뷰어 모바일 UI 개선 (사이드 버튼)<br>
+                <b>v4.9</b>: 주문 페이지 미접속 시 자동 이동 로직<br>
+                <b>v4.8</b>: 신세계/이마트 바코드 생성 및 뷰어 추가<br>
+                <b>v4.7</b>: 현대/롯데 상품권 지원 및 번호 생략 로직<br>
+                <b>v3.0</b>: 이미지 픽셀 분석 기반 사용 완료 도장 판별<br>
+                <div style="margin-top:20px; color:#888; text-align:center;">made by <b>krazyeom</b></div>
+            </div>
+            <button style="width:100%; margin-top:20px; padding:10px; background:#444; color:#fff; border:none; border-radius:5px; cursor:pointer;">닫기</button>
+        `;
+        card.querySelector('button').onclick = () => modal.remove();
+        modal.appendChild(card);
+        document.body.appendChild(modal);
+    };
+    document.getElementById('view-about').onclick = showAboutModal;
 
     const print = (msg) => {
         textarea.value += msg + '\n';
