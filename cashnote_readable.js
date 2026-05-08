@@ -8,6 +8,13 @@
  */
 
 (async function startAdvancedExtraction() {
+    // [0] 페이지 확인
+    if (!window.location.href.includes('market.cashnote.kr/orders')) {
+        alert('구매 목록 페이지로 이동합니다.\n이동 후 북마크를 다시 실행해주세요.');
+        window.location.href = 'https://market.cashnote.kr/orders';
+        return;
+    }
+
     // [1] UI 터미널 생성
     const logId = 'cashnote-terminal';
     if (document.getElementById(logId)) document.getElementById(logId).remove();
