@@ -107,7 +107,7 @@
         closeBtn.onclick = () => viewer.remove();
         
         const content = document.createElement('div');
-        content.style.cssText = 'background:#fff; color:#000; padding:30px; border-radius:15px; text-align:center; width:85%; max-width:400px; box-shadow:0 0 20px rgba(255,255,255,0.2);';
+        content.style.cssText = 'background:#fff; color:#000; padding:30px; border-radius:15px; text-align:center; width:85%; max-width:350px; box-shadow:0 0 20px rgba(255,255,255,0.2); position:relative;';
         
         const updateContent = () => {
             const item = items[currentIndex];
@@ -117,20 +117,22 @@
             content.innerHTML = `
                 <div style="font-size:18px; font-weight:bold; margin-bottom:10px; color:#333;">${amount}</div>
                 <div style="font-size:14px; color:#666; margin-bottom:20px;">${item.name}</div>
-                <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${item.number}&scale=3&rotate=N&includetext=false" style="width:100%; height:auto; min-height:100px; margin:10px 0;">
-                <div style="font-size:20px; font-weight:bold; margin-top:15px; letter-spacing:2px; font-family:monospace;">${item.number}</div>
-                <div style="margin-top:25px; display:flex; justify-content:space-between; align-items:center;">
-                    <button id="prev-bc" style="padding:10px 15px; border:none; background:#eee; border-radius:5px; cursor:pointer;">◀ 이전</button>
-                    <span style="font-size:14px; color:#888;">${currentIndex + 1} / ${items.length}</span>
-                    <button id="next-bc" style="padding:10px 15px; border:none; background:#eee; border-radius:5px; cursor:pointer;">다음 ▶</button>
+                <div style="display:flex; align-items:center; justify-content:center; gap:10px; position:relative;">
+                    <button id="prev-bc" style="position:absolute; left:-60px; width:50px; height:80px; background:rgba(255,255,255,0.2); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:24px; display:flex; align-items:center; justify-content:center;">◀</button>
+                    <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${item.number}&scale=3&rotate=N&includetext=false" style="width:100%; height:auto; min-height:100px; margin:10px 0;">
+                    <button id="next-bc" style="position:absolute; right:-60px; width:50px; height:80px; background:rgba(255,255,255,0.2); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:24px; display:flex; align-items:center; justify-content:center;">▶</button>
                 </div>
+                <div style="font-size:20px; font-weight:bold; margin-top:15px; letter-spacing:2px; font-family:monospace;">${item.number}</div>
+                <div style="margin-top:20px; font-size:14px; color:#888;">${currentIndex + 1} / ${items.length}</div>
             `;
             
-            content.querySelector('#prev-bc').onclick = () => {
+            content.querySelector('#prev-bc').onclick = (e) => {
+                e.stopPropagation();
                 currentIndex = (currentIndex - 1 + items.length) % items.length;
                 updateContent();
             };
-            content.querySelector('#next-bc').onclick = () => {
+            content.querySelector('#next-bc').onclick = (e) => {
+                e.stopPropagation();
                 currentIndex = (currentIndex + 1) % items.length;
                 updateContent();
             };
