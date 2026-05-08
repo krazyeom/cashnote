@@ -192,8 +192,18 @@
     };
 
     // [3] 메인 수집 루프
-    const targetKeywords = ['신세계이마트', '이마트', '문화상품권', '현대백화점', '롯데모바일상품권'];
-    const noNumberKeywords = ['현대백화점', '롯데모바일상품권'];
+    const targetKeywords = ['신세계이마트', '이마트', '문화상품권', '현대백화점', '롯데모바일상품권', '롯데백화점'];
+    const noNumberKeywords = ['현대백화점', '롯데모바일상품권', '롯데백화점'];
+    
+    // 브랜드별 이미지 분석 도입 시점 (이전 주문은 사용여부 확인 불가)
+    const reliableDates = {
+        '현대백화점': '2026-03-10',
+        '롯데백화점': '2026-03-10',
+        '롯데모바일상품권': '2026-03-10',
+        '신세계이마트': '2026-03-12',
+        '이마트': '2026-03-12',
+        '문화상품권': '2026-03-13'
+    };
     
     // 로컬스토리지의 'token' 키를 가져옵니다.
     const token = localStorage.getItem('token');
@@ -236,16 +246,26 @@
                         if (isAlreadyCanceled) {
                             finalStatus = 'CANCELED';
                         } else {
-                            print(` Analyzing Image: ${po.productName.substring(0, 15)}...`);
-                            imgStatus = await analyzeImage(couponUrl);
-                            
-                            if (imgStatus === 'USED') {
-                                finalStatus = 'USED';
-                            } else if (imgStatus === 'UNUSED') {
-                                finalStatus = 'UNUSED';
+                            // 날짜 기반 신뢰도 체크
+                            const orderDate = new Date(order.orderDate);
+                            const threshold = new Date(reliableDates[category] || '2000-01-01');
+                            const isReliable = orderDate >= threshold;
+
+                            if (!isReliable) {
+                                finalStatus = 'UNKNOWN';
+                                imgStatus = 'NOT_RELIABLE';
                             } else {
-                                // 분석 실패 시 API 상태로 최종 판단
-                                finalStatus = (po.claimStatus !== 'NONE') ? 'USED' : 'UNUSED';
+                                print(` Analyzing Image: ${po.productName.substring(0, 15)}...`);
+                                imgStatus = await analyzeImage(couponUrl);
+                                
+                                if (imgStatus === 'USED') {
+                                    finalStatus = 'USED';
+                                } else if (imgStatus === 'UNUSED') {
+                                    finalStatus = 'UNUSED';
+                                } else {
+                                    // 분석 실패 시 API 상태로 최종 판단
+                                    finalStatus = (po.claimStatus !== 'NONE') ? 'USED' : 'UNUSED';
+                                }
                             }
                         }
 
@@ -277,7 +297,8 @@
         }
         
         // 정렬 순서: 미사용 -> 사용완료 -> 취소
-        const statusOrder = { 'UNUSED': 0, 'USED': 1, 'CANCELED': 2 };
+        // 정렬 순서: 확인필요 -> 미사용 -> 사용완료 -> 취소
+        const statusOrder = { 'UNKNOWN': 0, 'UNUSED': 1, 'USED': 2, 'CANCELED': 3 };
         allResults.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
 
         const unusedCoupons = allResults.filter(i => i.status === 'UNUSED');
@@ -293,6 +314,7 @@
                     let tag = '[미사용]';
                     if (i.status === 'USED') { icon = '➖'; tag = '[ 사용 ]'; }
                     if (i.status === 'CANCELED') { icon = '❌'; tag = '[ 환불 ]'; }
+                    if (i.status === 'UNKNOWN') { icon = '⚠️'; tag = '[확인 필요]'; }
                     
                     const isNoNumber = noNumberKeywords.includes(i.category);
                     const numberPart = isNoNumber ? '' : `${i.number} | `;
