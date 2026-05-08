@@ -107,36 +107,52 @@
         closeBtn.onclick = () => viewer.remove();
         
         const content = document.createElement('div');
-        content.style.cssText = 'background:#fff; color:#000; padding:30px; border-radius:15px; text-align:center; width:85%; max-width:350px; box-shadow:0 0 20px rgba(255,255,255,0.2); position:relative;';
+        content.style.cssText = 'background:#fff; color:#000; padding:30px; border-radius:15px; text-align:center; width:85%; max-width:320px; box-shadow:0 0 20px rgba(255,255,255,0.2); position:relative;';
+        
+        // 정적 구조 생성
+        content.innerHTML = `
+            <div id="bc-amount" style="font-size:18px; font-weight:bold; margin-bottom:10px; color:#333;"></div>
+            <div id="bc-name" style="font-size:14px; color:#666; margin-bottom:20px;"></div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:10px; position:relative;">
+                <button id="prev-bc" style="position:absolute; left:-65px; width:60px; height:100px; background:rgba(255,255,255,0.3); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:30px; display:flex; align-items:center; justify-content:center; z-index:100;">◀</button>
+                <img id="bc-img" style="width:100%; height:auto; min-height:100px; margin:10px 0;">
+                <button id="next-bc" style="position:absolute; right:-65px; width:60px; height:100px; background:rgba(255,255,255,0.3); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:30px; display:flex; align-items:center; justify-content:center; z-index:100;">▶</button>
+            </div>
+            <div id="bc-number" style="font-size:20px; font-weight:bold; margin-top:15px; letter-spacing:2px; font-family:monospace;"></div>
+            <div id="bc-index" style="margin-top:20px; font-size:14px; color:#888;"></div>
+        `;
+        
+        const amountEl = content.querySelector('#bc-amount');
+        const nameEl = content.querySelector('#bc-name');
+        const imgEl = content.querySelector('#bc-img');
+        const numberEl = content.querySelector('#bc-number');
+        const indexEl = content.querySelector('#bc-index');
         
         const updateContent = () => {
             const item = items[currentIndex];
             const amountMatch = item.name.match(/[\d,]+원/);
-            const amount = amountMatch ? amountMatch[0] : '신세계 상품권';
-            
-            content.innerHTML = `
-                <div style="font-size:18px; font-weight:bold; margin-bottom:10px; color:#333;">${amount}</div>
-                <div style="font-size:14px; color:#666; margin-bottom:20px;">${item.name}</div>
-                <div style="display:flex; align-items:center; justify-content:center; gap:10px; position:relative;">
-                    <button id="prev-bc" style="position:absolute; left:-60px; width:50px; height:80px; background:rgba(255,255,255,0.2); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:24px; display:flex; align-items:center; justify-content:center;">◀</button>
-                    <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${item.number}&scale=3&rotate=N&includetext=false" style="width:100%; height:auto; min-height:100px; margin:10px 0;">
-                    <button id="next-bc" style="position:absolute; right:-60px; width:50px; height:80px; background:rgba(255,255,255,0.2); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:24px; display:flex; align-items:center; justify-content:center;">▶</button>
-                </div>
-                <div style="font-size:20px; font-weight:bold; margin-top:15px; letter-spacing:2px; font-family:monospace;">${item.number}</div>
-                <div style="margin-top:20px; font-size:14px; color:#888;">${currentIndex + 1} / ${items.length}</div>
-            `;
-            
-            content.querySelector('#prev-bc').onclick = (e) => {
-                e.stopPropagation();
-                currentIndex = (currentIndex - 1 + items.length) % items.length;
-                updateContent();
-            };
-            content.querySelector('#next-bc').onclick = (e) => {
-                e.stopPropagation();
-                currentIndex = (currentIndex + 1) % items.length;
-                updateContent();
-            };
+            amountEl.textContent = amountMatch ? amountMatch[0] : '신세계 상품권';
+            nameEl.textContent = item.name;
+            imgEl.src = `https://bwipjs-api.metafloor.com/?bcid=code128&text=${item.number}&scale=3&rotate=N&includetext=false`;
+            numberEl.textContent = item.number;
+            indexEl.textContent = `${currentIndex + 1} / ${items.length}`;
         };
+        
+        content.querySelector('#prev-bc').onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            currentIndex = (currentIndex - 1 + items.length) % items.length;
+            updateContent();
+        };
+        
+        content.querySelector('#next-bc').onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            currentIndex = (currentIndex + 1) % items.length;
+            updateContent();
+        };
+        
+        updateContent();
         
         updateContent();
         viewer.appendChild(closeBtn);
