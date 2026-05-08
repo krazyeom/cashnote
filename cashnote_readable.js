@@ -99,10 +99,10 @@
         
         let currentIndex = 0;
         const viewer = document.createElement('div');
-        viewer.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100001; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-family:sans-serif;';
+        viewer.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100001; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; font-family:sans-serif; touch-action:manipulation;';
         
         const closeBtn = document.createElement('div');
-        closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; font-size:30px; cursor:pointer; padding:10px;';
+        closeBtn.style.cssText = 'position:absolute; top:20px; right:20px; font-size:30px; cursor:pointer; padding:10px; touch-action:manipulation;';
         closeBtn.innerHTML = '✕';
         closeBtn.onclick = () => viewer.remove();
         
@@ -114,9 +114,9 @@
             <div id="bc-amount" style="font-size:18px; font-weight:bold; margin-bottom:10px; color:#333;"></div>
             <div id="bc-name" style="font-size:14px; color:#666; margin-bottom:20px;"></div>
             <div style="display:flex; align-items:center; justify-content:center; gap:10px; position:relative;">
-                <button id="prev-bc" style="position:absolute; left:-65px; width:60px; height:100px; background:rgba(255,255,255,0.3); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:30px; display:flex; align-items:center; justify-content:center; z-index:100;">◀</button>
+                <button id="prev-bc" style="position:absolute; left:-65px; width:60px; height:100px; background:rgba(255,255,255,0.3); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:30px; display:flex; align-items:center; justify-content:center; z-index:100; touch-action:manipulation;">◀</button>
                 <img id="bc-img" style="width:100%; height:auto; min-height:100px; margin:10px 0;">
-                <button id="next-bc" style="position:absolute; right:-65px; width:60px; height:100px; background:rgba(255,255,255,0.3); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:30px; display:flex; align-items:center; justify-content:center; z-index:100;">▶</button>
+                <button id="next-bc" style="position:absolute; right:-65px; width:60px; height:100px; background:rgba(255,255,255,0.3); border:1px solid #fff; color:#fff; border-radius:10px; cursor:pointer; font-size:30px; display:flex; align-items:center; justify-content:center; z-index:100; touch-action:manipulation;">▶</button>
             </div>
             <div id="bc-number" style="font-size:20px; font-weight:bold; margin-top:15px; letter-spacing:2px; font-family:monospace;"></div>
             <div id="bc-index" style="margin-top:20px; font-size:14px; color:#888;"></div>
