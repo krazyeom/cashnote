@@ -62,13 +62,14 @@
         card.innerHTML = `
             <div style="font-size:18px; font-weight:bold; margin-bottom:15px; color:#0f0; border-bottom:1px solid #444; padding-bottom:10px;">Version History</div>
             <div style="font-size:13px; line-height:1.6; max-height:300px; overflow-y:auto; padding-right:5px;">
+                <b>v5.4</b>: 구입 날짜별 내역(HISTORY) 기능 추가<br>
+                <b>v5.3</b>: 주문 일자별 이미지 분석 신뢰도 판별<br>
                 <b>v5.2</b>: 모바일 더블 탭 확대 방지 (touch-action)<br>
                 <b>v5.1</b>: 터치 이벤트 유실 및 DOM 업데이트 최적화<br>
                 <b>v5.0</b>: 바코드 뷰어 모바일 UI 개선 (사이드 버튼)<br>
                 <b>v4.9</b>: 주문 페이지 미접속 시 자동 이동 로직<br>
                 <b>v4.8</b>: 신세계/이마트 바코드 생성 및 뷰어 추가<br>
                 <b>v4.7</b>: 현대/롯데 상품권 지원 및 번호 생략 로직<br>
-                <b>v3.0</b>: 이미지 픽셀 분석 기반 사용 완료 도장 판별<br>
                 <div style="margin-top:20px; color:#888; text-align:center;">made by <b>krazyeom</b></div>
             </div>
             <button style="width:100%; margin-top:20px; padding:10px; background:#444; color:#fff; border:none; border-radius:5px; cursor:pointer;">닫기</button>
