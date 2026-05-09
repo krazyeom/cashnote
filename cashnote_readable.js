@@ -32,10 +32,10 @@
     header.innerHTML = `
         <span>CASHNOTE ANALYZER <small style="color:#888;">by krazyeom</small></span>
         <div>
-            <span id="view-about" style="cursor:pointer; color:#aaa; margin-right:15px; border:1px solid #aaa; padding:2px 5px;">[ABOUT]</span>
-            <span id="view-history" style="cursor:pointer; color:#fff; margin-right:15px; display:none; border:1px solid #fff; padding:2px 5px;">[HISTORY]</span>
-            <span id="view-barcodes" style="cursor:pointer; color:#0f0; margin-right:15px; display:none; border:1px solid #0f0; padding:2px 5px;">[VIEW BARCODES]</span>
-            <span id="close-terminal" style="cursor:pointer; color:#f00; border:1px solid #f00; padding:2px 5px;">[CLOSE]</span>
+            <span id="view-about" style="cursor:pointer; color:#aaa; margin-right:15px;">[ABOUT]</span>
+            <span id="view-history" style="cursor:pointer; color:#fff; margin-right:15px; display:none;">[HISTORY]</span>
+            <span id="view-barcodes" style="cursor:pointer; color:#0f0; margin-right:15px; display:none;">[VIEW BARCODES]</span>
+            <span id="close-terminal" style="cursor:pointer; color:#f00;">[CLOSE]</span>
         </div>
     `;
     
@@ -62,6 +62,7 @@
         card.innerHTML = `
             <div style="font-size:18px; font-weight:bold; margin-bottom:15px; color:#0f0; border-bottom:1px solid #444; padding-bottom:10px;">Version History</div>
             <div style="font-size:13px; line-height:1.6; max-height:300px; overflow-y:auto; padding-right:5px;">
+                <b>v5.7</b>: 터미널 헤더 버튼 테두리 제거 (디자인 간소화)<br>
                 <b>v5.6</b>: 터미널 헤더 버튼 디자인 통일 (테두리 추가)<br>
                 <b>v5.5</b>: 분석 진행 상황 오버레이 도입 (상세 로그 분리)<br>
                 <b>v5.4</b>: 구입 날짜별 내역(HISTORY) 기능 추가<br>
@@ -70,7 +71,6 @@
                 <b>v5.1</b>: 터치 이벤트 유실 및 DOM 업데이트 최적화<br>
                 <b>v5.0</b>: 바코드 뷰어 모바일 UI 개선 (사이드 버튼)<br>
                 <b>v4.9</b>: 주문 페이지 미접속 시 자동 이동 로직<br>
-                <b>v4.8</b>: 신세계/이마트 바코드 생성 및 뷰어 추가<br>
                 <div style="margin-top:20px; color:#888; text-align:center;">made by <b>krazyeom</b></div>
             </div>
             <button style="width:100%; margin-top:20px; padding:10px; background:#444; color:#fff; border:none; border-radius:5px; cursor:pointer;">닫기</button>
@@ -383,7 +383,7 @@
         // 상세 로그 보기 버튼 추가
         const logsBtn = document.createElement('span');
         logsBtn.id = 'view-logs';
-        logsBtn.style.cssText = 'cursor:pointer; color:#888; margin-right:15px; border:1px solid #888; padding:2px 5px;';
+        logsBtn.style.cssText = 'cursor:pointer; color:#888; margin-right:15px;';
         logsBtn.textContent = '[LOGS]';
         aboutBtn.parentElement.insertBefore(logsBtn, aboutBtn.nextSibling);
         
@@ -399,7 +399,6 @@
             textarea.style.display = isLogsVisible ? 'none' : 'block';
             mainContent.style.display = isLogsVisible ? 'block' : 'none';
             logsBtn.style.color = isLogsVisible ? '#888' : '#0f0';
-            logsBtn.style.borderColor = isLogsVisible ? '#888' : '#0f0';
         };
         
         if (allResults.length > 0) {
