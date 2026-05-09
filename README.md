@@ -39,7 +39,7 @@
 ```javascript
 javascript:(function(){
   var script = document.createElement('script');
-  script.src = 'https://cdn.jsdelivr.net/gh/유저명/저장소명/cashnote_remote.js?t=' + Date.now();
+  script.src = 'https://cdn.jsdelivr.net/gh/krazyeom/cashnote/cashnote_remote.js?t=' + Date.now();
   document.body.appendChild(script);
 })();
 ```
