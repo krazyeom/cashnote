@@ -58,7 +58,6 @@ Once registered, just click this bookmark on the [Cashnote Order Page](https://m
 
 - **v5.8**: Source code protection (Only obfuscated remote version hosted)
 - **v5.7**: Simplified terminal UI (Borders removed)
-- **v5.5**: Progress overlay & detailed log separation
 - **v5.4**: Purchase history dashboard
 - **v5.3**: Reliability logic based on order dates
 
