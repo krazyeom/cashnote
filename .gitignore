@@ -21,3 +21,7 @@ logs/
 # Misc
 .env
 .temp/
+
+# Source & Bookmarklet (Keep local only)
+cashnote_readable.js
+cashnote_bookmarklet.js
