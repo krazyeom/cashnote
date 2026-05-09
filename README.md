@@ -29,6 +29,25 @@
 
 ---
 
+## 원격 로더 방식 (추천) 🌟
+
+매번 코드를 복사해서 북마크를 업데이트할 필요 없이, GitHub에 올린 최신 코드를 자동으로 불러오는 방식입니다.
+
+1. 아래 코드를 복사하여 북마크의 URL 칸에 넣습니다.
+2. `유저명`과 `저장소명` 부분을 자신의 GitHub 정보에 맞게 수정합니다.
+
+```javascript
+javascript:(function(){
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/gh/유저명/저장소명/cashnote_remote.js?t=' + Date.now();
+  document.body.appendChild(script);
+})();
+```
+
+이 방식을 사용하면 `cashnote_remote.js` 파일만 GitHub에서 수정하면 모든 사용자가 즉시 최신 기능을 사용할 수 있습니다.
+
+---
+
 ## 지원 카테고리 (Supported Brands)
 
 - 신세계 / 이마트 상품권
