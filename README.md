@@ -1,40 +1,28 @@
-# Cashnote Coupon Extractor (캐시노트 쿠폰 추출기) 🚀
+# Cashnote Coupon Extractor 🚀
 
-캐시노트 마켓플레이스에서 구매한 다양한 전자 쿠폰(신세계/이마트, 문화상품권, 현대백화점, 롯데백화점 등)을 자동으로 스캔하여 관리할 수 있게 돕는 브라우저 북마클릿 도구입니다.
+A browser bookmarklet tool designed to automatically scan, analyze, and manage electronic coupons (Shinsegae/E-mart, Cultural Gift Certificates, Hyundai Department Store, Lotte Department Store, etc.) purchased on the Cashnote Marketplace.
 
----
-
-## 주요 기능 (Key Features)
-
-- **이미지 분석 AI (Canvas API)**: 쿠폰 이미지의 '사용 완료' 도장을 픽셀 단위로 분석하여 실시간으로 사용 여부를 판별합니다.
-- **주문 일자별 신뢰도 판별**: 브랜드별 분석 시스템 도입 시점 이전의 주문은 `⚠️ 확인 필요` 상태로 분류하여 분석 오류를 방지합니다.
-- **바코드 뷰어 (Barcode Viewer)**: 미사용 신세계/이마트 상품권을 좌우 슬라이드 형태의 바코드로 즉시 확인하고 오프라인에서 사용할 수 있습니다.
-- **구입 내역 (History)**: 날짜별로 구입한 품목과 상태를 한눈에 확인할 수 있는 히스토리 대시보드를 제공합니다.
-- **스마트 로그 분리**: 분석 과정의 긴 로그는 숨기고 최종 결과만 깔끔하게 보여주며, 필요 시 상세 로그를 확인할 수 있습니다.
-- **모바일 최적화**: 더블 탭 확대 방지 및 터치 친화적 인터페이스를 적용하여 스마트폰 브라우저에서도 원활하게 작동합니다.
+[한국어 설명 (Korean Version)](./README_ko.md)
 
 ---
 
-## 사용 방법 (How to Use)
+## Key Features
 
-1. **북마클릿 등록**:
-   - `cashnote_bookmarklet.js` 파일 안의 코드를 전체 복사합니다.
-   - 브라우저(크롬, 사파리 등)의 즐겨찾기(북마크)를 하나 생성합니다.
-   - 주소(URL) 칸에 복사한 코드를 붙여넣고 저장합니다.
-
-2. **실행**:
-   - [캐시노트 구매 목록 페이지](https://market.cashnote.kr/orders)에 접속하여 로그인합니다.
-   - 저장해둔 북마클릿을 클릭합니다.
-   - 스캔이 완료될 때까지 기다린 후 결과를 확인합니다.
+- **Image Analysis AI (Canvas API)**: Real-time verification of coupon usage status by analyzing 'Used' stamps at the pixel level.
+- **Date-based Reliability Check**: Prevents analysis errors by categorizing orders placed before the system introduction as `⚠️ Manual Check Required`.
+- **Barcode Viewer**: Instantly view unused Shinsegae/E-mart coupons in a slide-format barcode viewer for offline use.
+- **Purchase History**: A dedicated dashboard to view purchased items and their statuses organized by date.
+- **Smart Log Separation**: Hides detailed background logs to keep the result view clean, with an optional toggle for debugging.
+- **Mobile Optimized**: Enhanced touch interface with double-tap zoom prevention for seamless use on smartphones.
 
 ---
 
-## 원격 로더 방식 (추천) 🌟
+## Usage (Remote Loader Method) 🌟
 
-매번 코드를 복사해서 북마크를 업데이트할 필요 없이, GitHub에 올린 최신 코드를 자동으로 불러오는 방식입니다.
+The Remote Loader method ensures you always use the latest version without manually updating your bookmark.
 
-1. 아래 코드를 복사하여 북마크의 URL 칸에 넣습니다.
-2. `유저명`과 `저장소명` 부분을 자신의 GitHub 정보에 맞게 수정합니다.
+1. Create a new bookmark in your browser.
+2. Copy the code below and paste it into the URL field.
 
 ```javascript
 javascript:(function(){
@@ -44,35 +32,35 @@ javascript:(function(){
 })();
 ```
 
-이 방식을 사용하면 `cashnote_remote.js` 파일만 GitHub에서 수정하면 모든 사용자가 즉시 최신 기능을 사용할 수 있습니다.
+Once registered, just click this bookmark on the [Cashnote Order Page](https://market.cashnote.kr/orders).
 
 ---
 
-## 지원 카테고리 (Supported Brands)
+## Supported Brands
 
-- 신세계 / 이마트 상품권
-- 문화상품권 (컬쳐랜드)
-- 현대백화점 상품권
-- 롯데백화점 상품권
-- 롯데 모바일 상품권
-
----
-
-## 보안 및 주의사항 (Security & Disclaimer)
-
-- 본 도구는 로컬 브라우저 환경에서만 동작하며, 어떠한 개인정보나 인증 토큰도 외부 서버로 전송하지 않습니다.
-- 이미지 분석 방식 특성상 100%의 정확도를 보장하지 않을 수 있으므로, 중요한 쿠폰은 반드시 실제 사용 여부를 다시 한번 확인하시기 바랍니다.
-- 본 도구의 사용으로 인해 발생하는 문제에 대한 책임은 사용자 본인에게 있습니다.
+- Shinsegae / E-mart Vouchers
+- Cultural Gift Certificates (Culture Land)
+- Hyundai Department Store Vouchers
+- Lotte Department Store Vouchers
+- Lotte Mobile Vouchers
 
 ---
 
-## 버전 기록 (Version History)
+## Security & Disclaimer
 
-- **v5.7**: 터미널 헤더 버튼 디자인 간소화
-- **v5.5**: 분석 진행 상황 오버레이 및 상세 로그 분리 기능 도입
-- **v5.4**: 구입 날짜별 내역(HISTORY) 기능 추가
-- **v5.3**: 주문 일자별 이미지 분석 신뢰도 판별 로직 추가
-- **v5.0**: 바코드 뷰어 모바일 UI 개선
+- **Privacy**: This tool operates entirely within your local browser. No personal data or authentication tokens are transmitted to external servers.
+- **Accuracy**: Due to the nature of image analysis, 100% accuracy is not guaranteed. Please manually verify important coupons.
+- **Responsibility**: The developer is not responsible for any issues arising from the use of this tool.
+
+---
+
+## Version History
+
+- **v5.8**: Source code protection (Only obfuscated remote version hosted)
+- **v5.7**: Simplified terminal UI (Borders removed)
+- **v5.5**: Progress overlay & detailed log separation
+- **v5.4**: Purchase history dashboard
+- **v5.3**: Reliability logic based on order dates
 
 ---
 
