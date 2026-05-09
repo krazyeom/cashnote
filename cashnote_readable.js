@@ -33,6 +33,7 @@
         <span>CASHNOTE ANALYZER <small style="color:#888;">by krazyeom</small></span>
         <div>
             <span id="view-about" style="cursor:pointer; color:#aaa; margin-right:15px; text-decoration:underline;">[ABOUT]</span>
+            <span id="view-history" style="cursor:pointer; color:#fff; margin-right:15px; display:none; border:1px solid #fff; padding:2px 5px;">[HISTORY]</span>
             <span id="view-barcodes" style="cursor:pointer; color:#0f0; margin-right:15px; display:none; border:1px solid #0f0; padding:2px 5px;">[VIEW BARCODES]</span>
             <span id="close-terminal" style="cursor:pointer; color:#f00;">[CLOSE]</span>
         </div>
@@ -77,6 +78,52 @@
         document.body.appendChild(modal);
     };
     document.getElementById('view-about').onclick = showAboutModal;
+
+    // [1-2] 구입 내역 (HISTORY) 모달
+    const showHistoryModal = (results) => {
+        const modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:100005; display:flex; align-items:center; justify-content:center; color:#fff; font-family:sans-serif;';
+        modal.onclick = () => modal.remove();
+        
+        const card = document.createElement('div');
+        card.style.cssText = 'background:#111; padding:25px; border-radius:15px; width:90%; max-width:400px; border:1px solid #333; max-height:80vh; overflow-y:auto;';
+        card.onclick = (e) => e.stopPropagation();
+        
+        // 날짜별 그룹화
+        const groups = {};
+        results.forEach(item => {
+            const d = item.date.split('T')[0];
+            if (!groups[d]) groups[d] = [];
+            groups[d].push(item);
+        });
+        
+        const sortedDates = Object.keys(groups).sort().reverse();
+        
+        let html = '<div style="font-size:18px; font-weight:bold; margin-bottom:20px; color:#fff; border-bottom:1px solid #333; padding-bottom:10px;">Purchase History</div>';
+        
+        sortedDates.forEach(date => {
+            const items = groups[date];
+            html += `
+                <div style="margin-bottom:20px;">
+                    <div style="font-size:14px; color:#0f0; font-weight:bold; margin-bottom:8px;">📅 ${date} (${items.length}건)</div>
+                    <div style="font-size:12px; color:#ccc; line-height:1.6; padding-left:10px; border-left:1px solid #222;">
+                        ${items.map(i => {
+                            let statusIcon = '✅';
+                            if (i.status === 'USED') statusIcon = '➖';
+                            if (i.status === 'CANCELED') statusIcon = '❌';
+                            if (i.status === 'UNKNOWN') statusIcon = '⚠️';
+                            return `• ${statusIcon} ${i.name}`;
+                        }).join('<br>')}
+                    </div>
+                </div>
+            `;
+        });
+        
+        card.innerHTML = html + '<button style="width:100%; margin-top:10px; padding:10px; background:#333; color:#fff; border:none; border-radius:5px; cursor:pointer;">닫기</button>';
+        card.querySelector('button').onclick = () => modal.remove();
+        modal.appendChild(card);
+        document.body.appendChild(modal);
+    };
 
     const print = (msg) => {
         textarea.value += msg + '\n';
@@ -274,7 +321,8 @@
                             name: po.productName.replace('[카카오톡 발송]', '').replace('상품권 교환권', '').trim(),
                             number: po.eCouponNumber || 'N/A',
                             status: finalStatus,
-                            imgResult: imgStatus
+                            imgResult: imgStatus,
+                            date: order.orderDate
                         });
                     }
                 }
@@ -289,6 +337,12 @@
         print('\n--- SCAN COMPLETE ---');
         
         const barcodeBtn = document.getElementById('view-barcodes');
+        const historyBtn = document.getElementById('view-history');
+        
+        if (allResults.length > 0) {
+            historyBtn.style.display = 'inline-block';
+            historyBtn.onclick = () => showHistoryModal(allResults);
+        }
         const shinsegaeUnused = allResults.filter(i => i.status === 'UNUSED' && (i.category === '신세계이마트' || i.category === '이마트'));
         
         if (shinsegaeUnused.length > 0) {
