@@ -62,6 +62,7 @@
         card.innerHTML = `
             <div style="font-size:18px; font-weight:bold; margin-bottom:15px; color:#0f0; border-bottom:1px solid #444; padding-bottom:10px;">Version History</div>
             <div style="font-size:13px; line-height:1.6; max-height:300px; overflow-y:auto; padding-right:5px;">
+                <b>v5.5</b>: 분석 진행 상황 오버레이 도입 (상세 로그 분리)<br>
                 <b>v5.4</b>: 구입 날짜별 내역(HISTORY) 기능 추가<br>
                 <b>v5.3</b>: 주문 일자별 이미지 분석 신뢰도 판별<br>
                 <b>v5.2</b>: 모바일 더블 탭 확대 방지 (touch-action)<br>
@@ -127,8 +128,37 @@
     };
 
     const print = (msg) => {
-        textarea.value += msg + '\n';
-        textarea.scrollTop = textarea.scrollHeight;
+        detailedLogs += msg + '\n';
+        if (textarea) {
+            textarea.value = detailedLogs;
+            textarea.scrollTop = textarea.scrollHeight;
+        }
+    };
+
+    // [1-3] 진행 상황 오버레이 (PROGRESS)
+    const showProgress = (title, status) => {
+        let overlay = document.getElementById('cashnote-progress');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'cashnote-progress';
+            overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100006; display:flex; align-items:center; justify-content:center; color:#fff; font-family:sans-serif;';
+            overlay.innerHTML = `
+                <div style="background:#222; padding:30px; border-radius:20px; text-align:center; width:250px; border:1px solid #444;">
+                    <div style="color:#0f0; font-size:18px; font-weight:bold; margin-bottom:15px;">Scanning...</div>
+                    <div id="prog-title" style="font-size:14px; margin-bottom:10px;"></div>
+                    <div id="prog-status" style="font-size:12px; color:#aaa;"></div>
+                    <div style="margin-top:20px;"><small style="color:#555;">by krazyeom</small></div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+        document.getElementById('prog-title').textContent = title;
+        document.getElementById('prog-status').textContent = status;
+    };
+
+    const hideProgress = () => {
+        const overlay = document.getElementById('cashnote-progress');
+        if (overlay) overlay.remove();
     };
 
     // [2] 이미지 분석 함수 (핵심 로직)
@@ -265,9 +295,13 @@
     let lastOrderId = null;
     let hasMore = true;
     let page = 1;
+    let detailedLogs = "";
 
     try {
+        container.style.display = 'none'; // 분석 중에는 터미널 숨김
+        
         while (hasMore && page <= 30) {
+            showProgress(`Page ${page}`, `Fetching orders...`);
             print(`[Page ${page}] Fetching orders...`);
             const url = `https://market-api.cashnote.kr/api/market-place/v1/orders${lastOrderId ? '?lastOrderId=' + lastOrderId : ''}`;
             const response = await fetch(url, {
@@ -302,7 +336,9 @@
                             if (!isReliable) {
                                 finalStatus = 'UNKNOWN';
                                 imgStatus = 'NOT_RELIABLE';
+                                print(` Skip Date: ${po.productName.substring(0,10)}...`);
                             } else {
+                                showProgress(`Page ${page}`, `Analyzing Image...`);
                                 print(` Analyzing Image: ${po.productName.substring(0, 15)}...`);
                                 imgStatus = await analyzeImage(couponUrl);
                                 
@@ -334,11 +370,36 @@
             page++;
         }
 
+        hideProgress();
+        container.style.display = 'flex'; // 분석 완료 후 터미널 표시
+        
         // [4] 최종 출력 및 정렬
         print('\n--- SCAN COMPLETE ---');
         
         const barcodeBtn = document.getElementById('view-barcodes');
         const historyBtn = document.getElementById('view-history');
+        const aboutBtn = document.getElementById('view-about');
+        
+        // 상세 로그 보기 버튼 추가
+        const logsBtn = document.createElement('span');
+        logsBtn.id = 'view-logs';
+        logsBtn.style.cssText = 'cursor:pointer; color:#888; margin-right:15px; text-decoration:underline;';
+        logsBtn.textContent = '[LOGS]';
+        aboutBtn.parentElement.insertBefore(logsBtn, aboutBtn.nextSibling);
+        
+        const mainContent = document.createElement('div');
+        mainContent.id = 'main-results';
+        mainContent.style.cssText = 'flex:1; overflow-y:auto; padding:10px; white-space:pre-wrap; font-size:13px; line-height:1.4;';
+        
+        textarea.style.display = 'none'; // 초기에는 상세 로그 숨김
+        container.appendChild(mainContent);
+        
+        logsBtn.onclick = () => {
+            const isLogsVisible = textarea.style.display === 'block';
+            textarea.style.display = isLogsVisible ? 'none' : 'block';
+            mainContent.style.display = isLogsVisible ? 'block' : 'none';
+            logsBtn.style.color = isLogsVisible ? '#888' : '#0f0';
+        };
         
         if (allResults.length > 0) {
             historyBtn.style.display = 'inline-block';
@@ -390,7 +451,8 @@
             }
         });
 
-        print(detailedOutput + summaryOutput || 'No results found.');
+        mainContent.textContent = detailedOutput + summaryOutput || 'No results found.';
+        textarea.value = detailedLogs;
 
     } catch (err) {
         print(`!! Fatal Error: ${err.message}`);
