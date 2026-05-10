@@ -25,3 +25,4 @@ logs/
 # Source & Bookmarklet (Keep local only)
 cashnote_readable.js
 cashnote_bookmarklet.js
+cashnote_readable_me.js
