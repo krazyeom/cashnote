@@ -43,6 +43,7 @@ Once registered, just click this bookmark on the [Cashnote Order Page](https://m
 - Hyundai Department Store Vouchers
 - Lotte Department Store Vouchers
 - Lotte Mobile Vouchers
+- H.Point Vouchers
 
 ---
 
@@ -56,6 +57,8 @@ Once registered, just click this bookmark on the [Cashnote Order Page](https://m
 
 ## Version History
 
+- **v6.1**: H.Point support added
+- **v6.0**: About page added, Barcode engine optimized
 - **v5.8**: Source code protection (Only obfuscated remote version hosted)
 - **v5.7**: Simplified terminal UI (Borders removed)
 - **v5.4**: Purchase history dashboard
